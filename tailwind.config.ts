@@ -57,6 +57,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        aerospace: {
+          navy: "hsl(var(--aerospace-navy))",
+          steel: "hsl(var(--aerospace-steel))",
+          sky: "hsl(var(--aerospace-sky))",
+          light: "hsl(var(--aerospace-light))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
