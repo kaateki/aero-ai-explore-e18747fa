@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Activity, AlertTriangle, CheckCircle } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const defaultSensors: Record<string, number> = {
   "Operational Setting 1": 0.0023,
@@ -35,7 +36,6 @@ type PredictionResult = {
 };
 
 function simulatePrediction(sensors: Record<string, number>): PredictionResult {
-  // Simple simulation based on sensor deviations
   const s3 = sensors["Sensor 3 (HPC outlet temp)"] || 1589.7;
   const s4 = sensors["Sensor 4 (LPT outlet temp)"] || 1400.6;
   const deviation = Math.abs(1589.7 - s3) + Math.abs(1400.6 - s4);
@@ -56,6 +56,7 @@ const DemoSection = () => {
   const [sensors, setSensors] = useState(defaultSensors);
   const [result, setResult] = useState<PredictionResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const { ref, isVisible } = useScrollAnimation();
 
   const handlePredict = () => {
     setLoading(true);
@@ -66,24 +67,22 @@ const DemoSection = () => {
   };
 
   const healthColor = result?.health === "Good" ? "text-green-600" : result?.health === "Warning" ? "text-yellow-600" : "text-red-600";
-  const healthIcon = result?.health === "Good" ? CheckCircle : result?.health === "Warning" ? AlertTriangle : AlertTriangle;
-  const HealthIcon = healthIcon;
+  const HealthIcon = result?.health === "Good" ? CheckCircle : AlertTriangle;
 
   return (
     <section id="demo" className="py-24 bg-secondary/50">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+      <div className="container mx-auto px-4" ref={ref}>
+        <div className={`text-center mb-12 scroll-animate ${isVisible ? "visible" : ""}`}>
           <p className="text-primary font-medium text-sm mb-2 tracking-wide uppercase">Demo</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             Simulated RUL Prediction
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-sm">
-            Adjust engine sensor readings below and click "Predict" to see a simulated Remaining Useful Life estimate. Values are pre-filled with typical engine data.
+            Adjust engine sensor readings below and click "Predict" to see a simulated Remaining Useful Life estimate.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Input form */}
+        <div className={`grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto scroll-animate scroll-animate-delay-2 ${isVisible ? "visible" : ""}`}>
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Engine Sensor Readings</CardTitle>
@@ -110,7 +109,6 @@ const DemoSection = () => {
             </CardContent>
           </Card>
 
-          {/* Results */}
           <div className="space-y-6">
             {result ? (
               <>
