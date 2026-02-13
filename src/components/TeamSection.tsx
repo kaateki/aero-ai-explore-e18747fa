@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Github, ExternalLink, User } from "lucide-react";
+import { Github, User } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const team = [
   { name: "Adesh Gautam", role: "ML Engineer & Lead Developer" },
@@ -9,10 +10,12 @@ const team = [
 ];
 
 const TeamSection = () => {
+  const { ref, isVisible } = useScrollAnimation();
+
   return (
     <section id="team" className="py-24 bg-secondary/50">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+      <div className="container mx-auto px-4" ref={ref}>
+        <div className={`text-center mb-12 scroll-animate ${isVisible ? "visible" : ""}`}>
           <p className="text-primary font-medium text-sm mb-2 tracking-wide uppercase">Team</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             Team & Credits
@@ -22,7 +25,7 @@ const TeamSection = () => {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12">
+        <div className={`grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12 scroll-animate scroll-animate-delay-1 ${isVisible ? "visible" : ""}`}>
           {team.map((member) => (
             <Card key={member.name} className="text-center">
               <CardContent className="pt-6">
@@ -36,7 +39,7 @@ const TeamSection = () => {
           ))}
         </div>
 
-        <div className="text-center space-y-4">
+        <div className={`text-center space-y-4 scroll-animate scroll-animate-delay-2 ${isVisible ? "visible" : ""}`}>
           <Button variant="outline" size="lg" asChild>
             <a href="https://github.com/adesgautam/AirML" target="_blank" rel="noopener noreferrer">
               <Github className="h-4 w-4 mr-2" />
@@ -48,7 +51,6 @@ const TeamSection = () => {
           </p>
         </div>
 
-        {/* Footer */}
         <div className="mt-20 pt-8 border-t text-center text-xs text-muted-foreground">
           <p>AirML — AI-Powered Aircraft Predictive Maintenance · Academic Portfolio Project</p>
         </div>

@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Wrench, BarChart3, AlertTriangle, Database } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const useCases = [
   {
@@ -25,10 +26,12 @@ const useCases = [
 ];
 
 const AboutSection = () => {
+  const { ref, isVisible } = useScrollAnimation();
+
   return (
     <section id="about" className="py-24 bg-secondary/50">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+      <div className="container mx-auto px-4" ref={ref}>
+        <div className={`text-center mb-16 scroll-animate ${isVisible ? "visible" : ""}`}>
           <p className="text-primary font-medium text-sm mb-2 tracking-wide uppercase">About</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             AI in Aerospace Engineering
@@ -40,8 +43,8 @@ const AboutSection = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {useCases.map((uc) => (
-            <Card key={uc.title} className="border bg-card hover:shadow-md transition-shadow">
+          {useCases.map((uc, i) => (
+            <Card key={uc.title} className={`border bg-card hover:shadow-lg transition-all scroll-animate scroll-animate-delay-${Math.min(i, 3)} ${isVisible ? "visible" : ""}`}>
               <CardHeader className="flex flex-row items-start gap-4 pb-2">
                 <div className="p-2 rounded-lg bg-primary/10">
                   <uc.icon className="h-5 w-5 text-primary" />

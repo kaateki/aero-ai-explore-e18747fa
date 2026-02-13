@@ -6,7 +6,8 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line } from "recharts";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const sensorData = [
   { cycle: 1, s2: 642.15, s3: 1589.70, s4: 1400.60, s7: 554.36 },
@@ -38,10 +39,12 @@ const modelChartConfig: ChartConfig = {
 const techStack = ["Python", "Scikit-learn", "XGBoost", "Keras", "Pandas", "Django", "Angular"];
 
 const ProjectSection = () => {
+  const { ref, isVisible } = useScrollAnimation();
+
   return (
     <section id="project" className="py-24">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+      <div className="container mx-auto px-4" ref={ref}>
+        <div className={`text-center mb-16 scroll-animate ${isVisible ? "visible" : ""}`}>
           <p className="text-primary font-medium text-sm mb-2 tracking-wide uppercase">Project</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             The AirML Project
@@ -52,15 +55,13 @@ const ProjectSection = () => {
           </p>
         </div>
 
-        {/* Tech stack */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <div className={`flex flex-wrap justify-center gap-2 mb-12 scroll-animate scroll-animate-delay-1 ${isVisible ? "visible" : ""}`}>
           {techStack.map((t) => (
             <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
           ))}
         </div>
 
-        {/* Pipeline steps */}
-        <div className="grid sm:grid-cols-4 gap-4 mb-16 max-w-4xl mx-auto">
+        <div className={`grid sm:grid-cols-4 gap-4 mb-16 max-w-4xl mx-auto scroll-animate scroll-animate-delay-2 ${isVisible ? "visible" : ""}`}>
           {["Data Cleaning", "Feature Engineering", "Model Training", "RUL Prediction"].map((step, i) => (
             <div key={step} className="text-center">
               <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto mb-2 text-sm font-bold">
@@ -71,8 +72,7 @@ const ProjectSection = () => {
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Sensor degradation chart */}
+        <div className={`grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto scroll-animate scroll-animate-delay-3 ${isVisible ? "visible" : ""}`}>
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Sensor Degradation Over Cycles</CardTitle>
@@ -91,7 +91,6 @@ const ProjectSection = () => {
             </CardContent>
           </Card>
 
-          {/* Model performance chart */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Model Performance Comparison</CardTitle>

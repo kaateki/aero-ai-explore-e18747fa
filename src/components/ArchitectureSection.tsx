@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const pipelineSteps = [
   { title: "Raw Sensor Data", desc: "NASA C-MAPSS dataset with 21 sensor readings across engine run-to-failure trajectories" },
@@ -17,10 +18,12 @@ const technologies = [
 ];
 
 const ArchitectureSection = () => {
+  const { ref, isVisible } = useScrollAnimation();
+
   return (
     <section id="architecture" className="py-24">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+      <div className="container mx-auto px-4" ref={ref}>
+        <div className={`text-center mb-16 scroll-animate ${isVisible ? "visible" : ""}`}>
           <p className="text-primary font-medium text-sm mb-2 tracking-wide uppercase">Architecture</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
             How It Works
@@ -30,8 +33,7 @@ const ArchitectureSection = () => {
           </p>
         </div>
 
-        {/* Pipeline */}
-        <div className="max-w-4xl mx-auto mb-16">
+        <div className={`max-w-4xl mx-auto mb-16 scroll-animate scroll-animate-delay-1 ${isVisible ? "visible" : ""}`}>
           <div className="space-y-4">
             {pipelineSteps.map((step, i) => (
               <div key={step.title} className="flex items-start gap-4">
@@ -52,8 +54,7 @@ const ArchitectureSection = () => {
           </div>
         </div>
 
-        {/* Technologies */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        <div className={`grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto scroll-animate scroll-animate-delay-2 ${isVisible ? "visible" : ""}`}>
           {technologies.map((tech) => (
             <Card key={tech.category}>
               <CardHeader className="pb-2">
