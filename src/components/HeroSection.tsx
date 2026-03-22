@@ -1,4 +1,5 @@
 import { ArrowDown, Activity, Shield, Cpu } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
