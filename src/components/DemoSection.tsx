@@ -70,7 +70,7 @@ const DemoSection = () => {
   const HealthIcon = result?.health === "Good" ? CheckCircle : AlertTriangle;
 
   return (
-    <section id="demo" className="py-24 bg-secondary/50">
+    <section className="py-24 bg-secondary/50">
       <div className="container mx-auto px-4" ref={ref}>
         <div className={`text-center mb-12 scroll-animate ${isVisible ? "visible" : ""}`}>
           <p className="text-primary font-medium text-sm mb-2 tracking-wide uppercase">Demo</p>

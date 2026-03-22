@@ -56,9 +56,9 @@ const HeroSection = () => {
           ))}
         </div>
 
-        <a href="#about" className="inline-block mt-12 animate-bounce">
+        <Link to="/about" className="inline-block mt-12 animate-bounce">
           <ArrowDown className="h-5 w-5 text-muted-foreground" />
-        </a>
+        </Link>
       </div>
     </section>
   );
