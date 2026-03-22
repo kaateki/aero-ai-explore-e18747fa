@@ -21,7 +21,7 @@ const ArchitectureSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section id="architecture" className="py-24">
+    <section className="py-24">
       <div className="container mx-auto px-4" ref={ref}>
         <div className={`text-center mb-16 scroll-animate ${isVisible ? "visible" : ""}`}>
           <p className="text-primary font-medium text-sm mb-2 tracking-wide uppercase">Architecture</p>

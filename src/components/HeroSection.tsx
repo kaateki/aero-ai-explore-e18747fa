@@ -1,4 +1,5 @@
 import { ArrowDown, Activity, Shield, Cpu } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
@@ -6,7 +7,7 @@ const HeroSection = () => {
   const { ref, isVisible } = useScrollAnimation(0.05);
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+    <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: `linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)`,
         backgroundSize: '60px 60px'
@@ -31,10 +32,10 @@ const HeroSection = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <Button size="lg" asChild>
-              <a href="#demo">Try Simulated Demo</a>
+              <Link to="/demo">Try Simulated Demo</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <a href="#about">Learn More</a>
+              <Link to="/about">Learn More</Link>
             </Button>
           </div>
         </div>
@@ -55,9 +56,9 @@ const HeroSection = () => {
           ))}
         </div>
 
-        <a href="#about" className="inline-block mt-12 animate-bounce">
+        <Link to="/about" className="inline-block mt-12 animate-bounce">
           <ArrowDown className="h-5 w-5 text-muted-foreground" />
-        </a>
+        </Link>
       </div>
     </section>
   );
