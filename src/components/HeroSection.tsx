@@ -7,7 +7,7 @@ const HeroSection = () => {
   const { ref, isVisible } = useScrollAnimation(0.05);
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+    <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: `linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)`,
         backgroundSize: '60px 60px'
