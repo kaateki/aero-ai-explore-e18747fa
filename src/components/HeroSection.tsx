@@ -32,10 +32,10 @@ const HeroSection = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <Button size="lg" asChild>
-              <a href="#demo">Try Simulated Demo</a>
+              <Link to="/demo">Try Simulated Demo</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <a href="#about">Learn More</a>
+              <Link to="/about">Learn More</Link>
             </Button>
           </div>
         </div>
