@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   ChartContainer,
   ChartTooltip,
@@ -8,6 +10,7 @@ import {
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line } from "recharts";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { Github } from "lucide-react";
 
 const sensorData = [
   { cycle: 1, s2: 642.15, s3: 1589.70, s4: 1400.60, s7: 554.36 },
@@ -27,19 +30,41 @@ const modelPerformance = [
   { model: "Neural Network", rmse: 23.2, score: 89 },
 ];
 
-const sensorChartConfig: ChartConfig = {
-  s3: { label: "Sensor 3 (HPC outlet temp)", color: "hsl(var(--primary))" },
-  s4: { label: "Sensor 4 (LPT outlet temp)", color: "hsl(var(--accent))" },
-};
+type SensorKey = "s2" | "s3" | "s4" | "s7";
 
-const modelChartConfig: ChartConfig = {
-  score: { label: "Accuracy %", color: "hsl(var(--primary))" },
-};
+const allSensors: { key: SensorKey; label: string; color: string }[] = [
+  { key: "s2", label: "Sensor 2 (Fan inlet temp)", color: "hsl(var(--primary))" },
+  { key: "s3", label: "Sensor 3 (HPC outlet temp)", color: "hsl(142 71% 45%)" },
+  { key: "s4", label: "Sensor 4 (LPT outlet temp)", color: "hsl(var(--accent))" },
+  { key: "s7", label: "Sensor 7 (Total P at HPC)", color: "hsl(38 92% 50%)" },
+];
 
 const techStack = ["Python", "Scikit-learn", "XGBoost", "Keras", "Pandas", "Django", "Angular"];
 
 const ProjectSection = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const [activeSensors, setActiveSensors] = useState<Set<SensorKey>>(new Set(["s3", "s4"]));
+  const [activeModel, setActiveModel] = useState<string | null>(null);
+
+  const toggleSensor = (key: SensorKey) => {
+    setActiveSensors((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        if (next.size > 1) next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  };
+
+  const sensorChartConfig: ChartConfig = Object.fromEntries(
+    allSensors.filter((s) => activeSensors.has(s.key)).map((s) => [s.key, { label: s.label, color: s.color }])
+  );
+
+  const modelChartConfig: ChartConfig = {
+    score: { label: "Accuracy %", color: "hsl(var(--primary))" },
+  };
 
   return (
     <section className="py-24">
@@ -55,10 +80,19 @@ const ProjectSection = () => {
           </p>
         </div>
 
-        <div className={`flex flex-wrap justify-center gap-2 mb-12 scroll-animate scroll-animate-delay-1 ${isVisible ? "visible" : ""}`}>
+        <div className={`flex flex-wrap justify-center gap-2 mb-8 scroll-animate scroll-animate-delay-1 ${isVisible ? "visible" : ""}`}>
           {techStack.map((t) => (
             <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
           ))}
+        </div>
+
+        <div className={`flex justify-center mb-12 scroll-animate scroll-animate-delay-1 ${isVisible ? "visible" : ""}`}>
+          <Button variant="outline" size="lg" asChild>
+            <a href="https://github.com/adesgautam/AirML" target="_blank" rel="noopener noreferrer">
+              <Github className="h-4 w-4 mr-2" />
+              View on GitHub
+            </a>
+          </Button>
         </div>
 
         <div className={`grid sm:grid-cols-4 gap-4 mb-16 max-w-4xl mx-auto scroll-animate scroll-animate-delay-2 ${isVisible ? "visible" : ""}`}>
@@ -76,6 +110,18 @@ const ProjectSection = () => {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Sensor Degradation Over Cycles</CardTitle>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {allSensors.map((s) => (
+                  <Badge
+                    key={s.key}
+                    variant={activeSensors.has(s.key) ? "default" : "outline"}
+                    className="cursor-pointer text-xs select-none"
+                    onClick={() => toggleSensor(s.key)}
+                  >
+                    {s.key.toUpperCase()}
+                  </Badge>
+                ))}
+              </div>
             </CardHeader>
             <CardContent>
               <ChartContainer config={sensorChartConfig} className="h-[280px] w-full">
@@ -84,8 +130,9 @@ const ProjectSection = () => {
                   <XAxis dataKey="cycle" fontSize={12} />
                   <YAxis fontSize={12} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Line type="monotone" dataKey="s3" stroke="var(--color-s3)" strokeWidth={2} dot={false} />
-                  <Line type="monotone" dataKey="s4" stroke="var(--color-s4)" strokeWidth={2} dot={false} />
+                  {allSensors.filter((s) => activeSensors.has(s.key)).map((s) => (
+                    <Line key={s.key} type="monotone" dataKey={s.key} stroke={s.color} strokeWidth={2} dot={false} />
+                  ))}
                 </LineChart>
               </ChartContainer>
             </CardContent>
@@ -94,17 +141,54 @@ const ProjectSection = () => {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Model Performance Comparison</CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">Click a bar to highlight a model</p>
             </CardHeader>
             <CardContent>
               <ChartContainer config={modelChartConfig} className="h-[280px] w-full">
-                <BarChart data={modelPerformance}>
+                <BarChart
+                  data={modelPerformance}
+                  onClick={(data) => {
+                    if (data?.activeLabel) {
+                      setActiveModel((prev) => (prev === data.activeLabel ? null : (data.activeLabel as string)));
+                    }
+                  }}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="model" fontSize={12} />
                   <YAxis fontSize={12} domain={[0, 100]} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="score" fill="var(--color-score)" radius={[4, 4, 0, 0]} />
+                  <Bar
+                    dataKey="score"
+                    radius={[4, 4, 0, 0]}
+                    cursor="pointer"
+                    fill="hsl(var(--primary))"
+                    shape={(props: any) => {
+                      const isActive = !activeModel || props.model === activeModel;
+                      return (
+                        <rect
+                          x={props.x}
+                          y={props.y}
+                          width={props.width}
+                          height={props.height}
+                          rx={4}
+                          ry={4}
+                          fill="hsl(var(--primary))"
+                          opacity={isActive ? 1 : 0.25}
+                          className="transition-opacity"
+                        />
+                      );
+                    }}
+                  />
                 </BarChart>
               </ChartContainer>
+              {activeModel && (
+                <div className="mt-3 p-3 rounded-md bg-secondary text-sm">
+                  <p className="font-semibold text-foreground">{activeModel}</p>
+                  <p className="text-muted-foreground">
+                    RMSE: {modelPerformance.find((m) => m.model === activeModel)?.rmse} · Accuracy: {modelPerformance.find((m) => m.model === activeModel)?.score}%
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
