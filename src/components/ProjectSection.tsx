@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   ChartContainer,
   ChartTooltip,
@@ -8,6 +10,7 @@ import {
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line } from "recharts";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { Github } from "lucide-react";
 
 const sensorData = [
   { cycle: 1, s2: 642.15, s3: 1589.70, s4: 1400.60, s7: 554.36 },
@@ -27,19 +30,41 @@ const modelPerformance = [
   { model: "Neural Network", rmse: 23.2, score: 89 },
 ];
 
-const sensorChartConfig: ChartConfig = {
-  s3: { label: "Sensor 3 (HPC outlet temp)", color: "hsl(var(--primary))" },
-  s4: { label: "Sensor 4 (LPT outlet temp)", color: "hsl(var(--accent))" },
-};
+type SensorKey = "s2" | "s3" | "s4" | "s7";
 
-const modelChartConfig: ChartConfig = {
-  score: { label: "Accuracy %", color: "hsl(var(--primary))" },
-};
+const allSensors: { key: SensorKey; label: string; color: string }[] = [
+  { key: "s2", label: "Sensor 2 (Fan inlet temp)", color: "hsl(var(--primary))" },
+  { key: "s3", label: "Sensor 3 (HPC outlet temp)", color: "hsl(142 71% 45%)" },
+  { key: "s4", label: "Sensor 4 (LPT outlet temp)", color: "hsl(var(--accent))" },
+  { key: "s7", label: "Sensor 7 (Total P at HPC)", color: "hsl(38 92% 50%)" },
+];
 
 const techStack = ["Python", "Scikit-learn", "XGBoost", "Keras", "Pandas", "Django", "Angular"];
 
 const ProjectSection = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const [activeSensors, setActiveSensors] = useState<Set<SensorKey>>(new Set(["s3", "s4"]));
+  const [activeModel, setActiveModel] = useState<string | null>(null);
+
+  const toggleSensor = (key: SensorKey) => {
+    setActiveSensors((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        if (next.size > 1) next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  };
+
+  const sensorChartConfig: ChartConfig = Object.fromEntries(
+    allSensors.filter((s) => activeSensors.has(s.key)).map((s) => [s.key, { label: s.label, color: s.color }])
+  );
+
+  const modelChartConfig: ChartConfig = {
+    score: { label: "Accuracy %", color: "hsl(var(--primary))" },
+  };
 
   return (
     <section className="py-24">
