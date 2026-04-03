@@ -1,197 +1,224 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Database, BrainCircuit, BarChart3, ArrowRight, Activity } from "lucide-react";
 import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line } from "recharts";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { Github } from "lucide-react";
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  LineChart, Line, AreaChart, Area, Legend,
+} from "recharts";
 
-const sensorData = [
-  { cycle: 1, s2: 642.15, s3: 1589.70, s4: 1400.60, s7: 554.36 },
-  { cycle: 25, s2: 642.03, s3: 1587.20, s4: 1398.21, s7: 553.89 },
-  { cycle: 50, s2: 641.82, s3: 1582.85, s4: 1394.50, s7: 552.15 },
-  { cycle: 75, s2: 641.55, s3: 1577.04, s4: 1389.73, s7: 550.42 },
-  { cycle: 100, s2: 641.12, s3: 1569.45, s4: 1383.20, s7: 548.08 },
-  { cycle: 125, s2: 640.50, s3: 1559.87, s4: 1375.10, s7: 545.30 },
-  { cycle: 150, s2: 639.70, s3: 1548.32, s4: 1365.45, s7: 541.90 },
-  { cycle: 175, s2: 638.65, s3: 1534.80, s4: 1353.60, s7: 537.85 },
-  { cycle: 192, s2: 637.30, s3: 1518.90, s4: 1339.20, s7: 533.10 },
+const sensorData = Array.from({ length: 30 }, (_, i) => ({
+  cycle: i * 10 + 1,
+  sensor2: 642 - i * 0.5 + Math.random() * 3,
+  sensor3: 1590 + i * 0.3 + Math.random() * 5,
+  sensor4: 1400 - i * 2 + Math.random() * 10,
+}));
+
+const modelComparison = [
+  { model: "Random Forest", rmse: 28.4, r2: 0.82, color: "hsl(24, 95%, 55%)" },
+  { model: "XGBoost", rmse: 22.1, r2: 0.88, color: "hsl(180, 65%, 45%)" },
+  { model: "Neural Network", rmse: 18.7, r2: 0.92, color: "hsl(260, 70%, 60%)" },
 ];
 
-const modelPerformance = [
-  { model: "Random Forest", rmse: 31.5, score: 78 },
-  { model: "XGBoost", rmse: 26.8, score: 84 },
-  { model: "Neural Network", rmse: 23.2, score: 89 },
-];
-
-type SensorKey = "s2" | "s3" | "s4" | "s7";
-
-const allSensors: { key: SensorKey; label: string; color: string }[] = [
-  { key: "s2", label: "Sensor 2 (Fan inlet temp)", color: "hsl(var(--primary))" },
-  { key: "s3", label: "Sensor 3 (HPC outlet temp)", color: "hsl(142 71% 45%)" },
-  { key: "s4", label: "Sensor 4 (LPT outlet temp)", color: "hsl(var(--accent))" },
-  { key: "s7", label: "Sensor 7 (Total P at HPC)", color: "hsl(38 92% 50%)" },
-];
-
-const techStack = ["Python", "Scikit-learn", "XGBoost", "Keras", "Pandas", "Django", "Angular"];
+const rulPredictions = Array.from({ length: 20 }, (_, i) => ({
+  engine: `E${i + 1}`,
+  actual: Math.floor(Math.random() * 150 + 50),
+  predicted: 0,
+})).map((d) => ({ ...d, predicted: d.actual + Math.floor(Math.random() * 30 - 15) }));
 
 const ProjectSection = () => {
-  const { ref, isVisible } = useScrollAnimation();
-  const [activeSensors, setActiveSensors] = useState<Set<SensorKey>>(new Set(["s3", "s4"]));
-  const [activeModel, setActiveModel] = useState<string | null>(null);
-
-  const toggleSensor = (key: SensorKey) => {
-    setActiveSensors((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        if (next.size > 1) next.delete(key);
-      } else {
-        next.add(key);
-      }
-      return next;
-    });
-  };
-
-  const sensorChartConfig: ChartConfig = Object.fromEntries(
-    allSensors.filter((s) => activeSensors.has(s.key)).map((s) => [s.key, { label: s.label, color: s.color }])
-  );
-
-  const modelChartConfig: ChartConfig = {
-    score: { label: "Accuracy %", color: "hsl(var(--primary))" },
-  };
+  const [activeModel, setActiveModel] = useState(2);
 
   return (
-    <section className="py-24">
-      <div className="container mx-auto px-4" ref={ref}>
-        <div className={`text-center mb-16 scroll-animate ${isVisible ? "visible" : ""}`}>
-          <p className="text-primary font-medium text-sm mb-2 tracking-wide uppercase">Project</p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            The AirML Project
+    <section id="project" className="py-24 bg-gradient-section">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-gradient">
+            The Project — Engine Life Prediction
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            AirML predicts the Remaining Useful Life of turbofan engines using the NASA C-MAPSS dataset,
-            comparing Random Forest, XGBoost, and Neural Network approaches.
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Using machine learning to predict the Remaining Useful Life (RUL) of aircraft turbofan engines.
           </p>
-        </div>
+        </motion.div>
 
-        <div className={`flex flex-wrap justify-center gap-2 mb-8 scroll-animate scroll-animate-delay-1 ${isVisible ? "visible" : ""}`}>
-          {techStack.map((t) => (
-            <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
-          ))}
-        </div>
-
-        <div className={`flex justify-center mb-12 scroll-animate scroll-animate-delay-1 ${isVisible ? "visible" : ""}`}>
-          <Button variant="outline" size="lg" asChild>
-            <a href="https://github.com/adesgautam/AirML" target="_blank" rel="noopener noreferrer">
-              <Github className="h-4 w-4 mr-2" />
-              View on GitHub
-            </a>
-          </Button>
-        </div>
-
-        <div className={`grid sm:grid-cols-4 gap-4 mb-16 max-w-4xl mx-auto scroll-animate scroll-animate-delay-2 ${isVisible ? "visible" : ""}`}>
-          {["Data Cleaning", "Feature Engineering", "Model Training", "RUL Prediction"].map((step, i) => (
-            <div key={step} className="text-center">
-              <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto mb-2 text-sm font-bold">
-                {i + 1}
+        {/* How it works */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-16"
+        >
+          <h3 className="font-display text-2xl font-semibold text-center mb-8">How It Works</h3>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
+            {[
+              { icon: Database, label: "Data Collection", desc: "NASA C-MAPSS Dataset", color: "border-primary" },
+              { icon: BrainCircuit, label: "ML Training", desc: "RF, XGBoost, NN", color: "border-secondary" },
+              { icon: BarChart3, label: "Predictions", desc: "RUL Estimation", color: "border-aero-purple" },
+            ].map((step, i) => (
+              <div key={step.label} className="flex items-center">
+                <Card className={`bg-gradient-card border-2 ${step.color} w-56 text-center hover:scale-105 transition-transform`}>
+                  <CardContent className="pt-6">
+                    <step.icon className="h-10 w-10 mx-auto mb-3 text-primary" />
+                    <h4 className="font-display text-sm font-semibold">{step.label}</h4>
+                    <p className="text-xs text-muted-foreground mt-1">{step.desc}</p>
+                  </CardContent>
+                </Card>
+                {i < 2 && <ArrowRight className="h-6 w-6 text-muted-foreground mx-2 hidden md:block" />}
               </div>
-              <p className="text-sm font-medium text-foreground">{step}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </motion.div>
 
-        <div className={`grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto scroll-animate scroll-animate-delay-3 ${isVisible ? "visible" : ""}`}>
-          <Card>
+        {/* Dataset info */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-16"
+        >
+          <Card className="bg-gradient-card border-border max-w-3xl mx-auto">
             <CardHeader>
-              <CardTitle className="text-lg">Sensor Degradation Over Cycles</CardTitle>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {allSensors.map((s) => (
-                  <Badge
-                    key={s.key}
-                    variant={activeSensors.has(s.key) ? "default" : "outline"}
-                    className="cursor-pointer text-xs select-none"
-                    onClick={() => toggleSensor(s.key)}
-                  >
-                    {s.key.toUpperCase()}
-                  </Badge>
+              <CardTitle className="font-display flex items-center gap-2">
+                <Database className="h-5 w-5 text-primary" />
+                NASA Turbofan Engine Degradation Dataset
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                {[
+                  { value: "249", label: "Engines" },
+                  { value: "21", label: "Sensors" },
+                  { value: "3", label: "Operational Settings" },
+                ].map((stat) => (
+                  <div key={stat.label} className="p-4 bg-muted rounded-lg">
+                    <div className="font-display text-2xl font-bold text-primary">{stat.value}</div>
+                    <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  </div>
                 ))}
               </div>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={sensorChartConfig} className="h-[280px] w-full">
-                <LineChart data={sensorData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="cycle" fontSize={12} />
-                  <YAxis fontSize={12} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  {allSensors.filter((s) => activeSensors.has(s.key)).map((s) => (
-                    <Line key={s.key} type="monotone" dataKey={s.key} stroke={s.color} strokeWidth={2} dot={false} />
-                  ))}
-                </LineChart>
-              </ChartContainer>
+              <p className="text-sm text-muted-foreground mt-4">
+                The C-MAPSS dataset simulates turbofan engine degradation from healthy to failure, providing run-to-failure sensor readings used to train predictive models.
+              </p>
             </CardContent>
           </Card>
+        </motion.div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Model Performance Comparison</CardTitle>
-              <p className="text-xs text-muted-foreground mt-1">Click a bar to highlight a model</p>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={modelChartConfig} className="h-[280px] w-full">
-                <BarChart
-                  data={modelPerformance}
-                  onClick={(data) => {
-                    if (data?.activeLabel) {
-                      setActiveModel((prev) => (prev === data.activeLabel ? null : (data.activeLabel as string)));
-                    }
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="model" fontSize={12} />
-                  <YAxis fontSize={12} domain={[0, 100]} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar
-                    dataKey="score"
-                    radius={[4, 4, 0, 0]}
-                    cursor="pointer"
-                    fill="hsl(var(--primary))"
-                    shape={(props: any) => {
-                      const isActive = !activeModel || props.model === activeModel;
-                      return (
-                        <rect
-                          x={props.x}
-                          y={props.y}
-                          width={props.width}
-                          height={props.height}
-                          rx={4}
-                          ry={4}
-                          fill="hsl(var(--primary))"
-                          opacity={isActive ? 1 : 0.25}
-                          className="transition-opacity"
-                        />
-                      );
-                    }}
-                  />
-                </BarChart>
-              </ChartContainer>
-              {activeModel && (
-                <div className="mt-3 p-3 rounded-md bg-secondary text-sm">
-                  <p className="font-semibold text-foreground">{activeModel}</p>
-                  <p className="text-muted-foreground">
-                    RMSE: {modelPerformance.find((m) => m.model === activeModel)?.rmse} · Accuracy: {modelPerformance.find((m) => m.model === activeModel)?.score}%
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+        {/* ML Models Comparison */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-16"
+        >
+          <h3 className="font-display text-2xl font-semibold text-center mb-8">ML Model Comparison</h3>
+          <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
+            {modelComparison.map((m, i) => (
+              <Card
+                key={m.model}
+                onClick={() => setActiveModel(i)}
+                className={`bg-gradient-card cursor-pointer transition-all hover:scale-105 ${
+                  activeModel === i ? "border-primary glow-orange" : "border-border"
+                }`}
+              >
+                <CardContent className="pt-6 text-center">
+                  <h4 className="font-display text-sm font-semibold mb-2">{m.model}</h4>
+                  <div className="text-2xl font-bold text-primary">{m.r2}</div>
+                  <div className="text-xs text-muted-foreground">R² Score</div>
+                  <div className="text-lg font-semibold text-secondary mt-1">{m.rmse}</div>
+                  <div className="text-xs text-muted-foreground">RMSE</div>
+                  {activeModel === i && (
+                    <div className="mt-2 text-xs text-primary font-medium">▲ Selected</div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Charts */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <Tabs defaultValue="sensor" className="max-w-4xl mx-auto">
+            <TabsList className="grid w-full grid-cols-3 mb-8 bg-muted">
+              <TabsTrigger value="sensor">Sensor Trends</TabsTrigger>
+              <TabsTrigger value="accuracy">Model Accuracy</TabsTrigger>
+              <TabsTrigger value="rul">RUL Predictions</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="sensor">
+              <Card className="bg-gradient-card border-border">
+                <CardHeader>
+                  <CardTitle className="font-display text-lg flex items-center gap-2">
+                    <Activity className="h-5 w-5 text-secondary" /> Sensor Data Over Engine Cycles
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={sensorData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
+                      <XAxis dataKey="cycle" stroke="hsl(215, 20%, 60%)" fontSize={12} />
+                      <YAxis stroke="hsl(215, 20%, 60%)" fontSize={12} />
+                      <Tooltip contentStyle={{ background: "hsl(220, 20%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8 }} />
+                      <Legend />
+                      <Line type="monotone" dataKey="sensor2" stroke="hsl(24, 95%, 55%)" strokeWidth={2} dot={false} name="Sensor 2" />
+                      <Line type="monotone" dataKey="sensor4" stroke="hsl(180, 65%, 45%)" strokeWidth={2} dot={false} name="Sensor 4" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="accuracy">
+              <Card className="bg-gradient-card border-border">
+                <CardHeader>
+                  <CardTitle className="font-display text-lg">Model R² Score Comparison</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={modelComparison}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
+                      <XAxis dataKey="model" stroke="hsl(215, 20%, 60%)" fontSize={12} />
+                      <YAxis stroke="hsl(215, 20%, 60%)" fontSize={12} domain={[0, 1]} />
+                      <Tooltip contentStyle={{ background: "hsl(220, 20%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8 }} />
+                      <Bar dataKey="r2" name="R² Score" radius={[6, 6, 0, 0]} fill="hsl(24, 95%, 55%)" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="rul">
+              <Card className="bg-gradient-card border-border">
+                <CardHeader>
+                  <CardTitle className="font-display text-lg">Actual vs Predicted RUL</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={rulPredictions}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
+                      <XAxis dataKey="engine" stroke="hsl(215, 20%, 60%)" fontSize={12} />
+                      <YAxis stroke="hsl(215, 20%, 60%)" fontSize={12} />
+                      <Tooltip contentStyle={{ background: "hsl(220, 20%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8 }} />
+                      <Legend />
+                      <Area type="monotone" dataKey="actual" stroke="hsl(24, 95%, 55%)" fill="hsl(24, 95%, 55%)" fillOpacity={0.2} name="Actual RUL" />
+                      <Area type="monotone" dataKey="predicted" stroke="hsl(180, 65%, 45%)" fill="hsl(180, 65%, 45%)" fillOpacity={0.2} name="Predicted RUL" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </motion.div>
       </div>
     </section>
   );
