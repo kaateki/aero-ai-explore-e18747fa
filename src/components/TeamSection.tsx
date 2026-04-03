@@ -1,62 +1,78 @@
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Github, User } from "lucide-react";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { Code, BrainCircuit } from "lucide-react";
 
 const team = [
-  { name: "Adesh Gautam", role: "ML Engineer & Lead Developer" },
-  { name: "Kunal Sharma", role: "Backend Developer" },
-  { name: "Shreya Gupta", role: "Frontend Developer" },
+  {
+    name: "Aditya",
+    role: "ML Engineer & Backend Developer",
+    contributions: [
+      "Designed and trained ML models (RF, XGBoost, Neural Network)",
+      "Built data preprocessing pipelines",
+      "Developed the Django REST API backend",
+      "Performed model evaluation and optimization",
+    ],
+    icon: BrainCircuit,
+    gradient: "from-primary/30 to-aero-purple/30",
+  },
+  {
+    name: "Divyanshu",
+    role: "Frontend Developer & Data Analyst",
+    contributions: [
+      "Built the interactive frontend dashboard",
+      "Created data visualizations and charts",
+      "Performed exploratory data analysis",
+      "Designed the user experience flow",
+    ],
+    icon: Code,
+    gradient: "from-secondary/30 to-aero-blue/30",
+  },
 ];
 
-const TeamSection = () => {
-  const { ref, isVisible } = useScrollAnimation();
+const TeamSection = () => (
+  <section id="team" className="py-24 bg-gradient-section">
+    <div className="container mx-auto px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="text-center mb-16"
+      >
+        <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-gradient">Meet the Team</h2>
+        <p className="text-muted-foreground text-lg">The minds behind this project</p>
+      </motion.div>
 
-  return (
-    <section className="py-24 bg-secondary/50">
-      <div className="container mx-auto px-4" ref={ref}>
-        <div className={`text-center mb-12 scroll-animate ${isVisible ? "visible" : ""}`}>
-          <p className="text-primary font-medium text-sm mb-2 tracking-wide uppercase">Team</p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-            Team & Credits
-          </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            AirML was developed as an academic project exploring machine learning applications in aerospace predictive maintenance.
-          </p>
-        </div>
-
-        <div className={`grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12 scroll-animate scroll-animate-delay-1 ${isVisible ? "visible" : ""}`}>
-          {team.map((member) => (
-            <Card key={member.name} className="text-center">
-              <CardContent className="pt-6">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                  <User className="h-7 w-7 text-primary" />
+      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        {team.map((member, i) => (
+          <motion.div
+            key={member.name}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.2 }}
+          >
+            <Card className="bg-gradient-card border-border hover:border-primary/40 transition-all group hover:scale-[1.03] hover:glow-orange">
+              <CardContent className="pt-8">
+                <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${member.gradient} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
+                  <member.icon className="h-10 w-10 text-foreground" />
                 </div>
-                <h3 className="font-semibold text-foreground">{member.name}</h3>
-                <p className="text-xs text-muted-foreground mt-1">{member.role}</p>
+                <h3 className="font-display text-2xl font-bold text-center mb-1">{member.name}</h3>
+                <p className="text-primary text-sm text-center mb-4">{member.role}</p>
+                <ul className="space-y-2">
+                  {member.contributions.map((c) => (
+                    <li key={c} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <span className="text-primary mt-1">▸</span>
+                      {c}
+                    </li>
+                  ))}
+                </ul>
               </CardContent>
             </Card>
-          ))}
-        </div>
-
-        <div className={`text-center space-y-4 scroll-animate scroll-animate-delay-2 ${isVisible ? "visible" : ""}`}>
-          <Button variant="outline" size="lg" asChild>
-            <a href="https://github.com/adesgautam/AirML" target="_blank" rel="noopener noreferrer">
-              <Github className="h-4 w-4 mr-2" />
-              View on GitHub
-            </a>
-          </Button>
-          <p className="text-xs text-muted-foreground">
-            Dataset: NASA C-MAPSS Turbofan Engine Degradation Simulation
-          </p>
-        </div>
-
-        <div className="mt-20 pt-8 border-t text-center text-xs text-muted-foreground">
-          <p>AirML — AI-Powered Aircraft Predictive Maintenance · Academic Portfolio Project</p>
-        </div>
+          </motion.div>
+        ))}
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
 export default TeamSection;
