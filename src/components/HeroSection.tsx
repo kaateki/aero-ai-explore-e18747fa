@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Rocket } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const FloatingParticle = ({ delay, x, y, size }: { delay: number; x: string; y: string; size: number }) => (
   <motion.div
@@ -62,10 +63,10 @@ const HeroSection = () => {
             <Button
               variant="outline"
               size="lg"
-              onClick={() => scrollTo("#aerospace")}
+              asChild
               className="text-base px-8 py-6 border-primary/30 hover:bg-primary/10 hover:scale-105 transition-transform"
             >
-              About Aerospace Engineering
+              <Link to="/aerospace">About Aerospace Engineering</Link>
             </Button>
           </div>
         </motion.div>
