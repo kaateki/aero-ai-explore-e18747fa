@@ -66,7 +66,7 @@ const HeroSection = () => {
               asChild
               className="text-base px-8 py-6 border-primary/30 hover:bg-primary/10 hover:scale-105 transition-transform"
             >
-              <a href="/aerospace">About Aerospace Engineering</a>
+              <Link to="/aerospace">About Aerospace Engineering</Link>
             </Button>
           </div>
         </motion.div>
