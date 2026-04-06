@@ -366,10 +366,12 @@ const ProjectSection = () => {
           </div>
         </motion.div>
 
-        {/* Training simulation */}
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-20 max-w-4xl mx-auto">
-          <TrainingProgress />
-        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+export default ProjectSection;
 
         {/* Model comparison */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-20">
