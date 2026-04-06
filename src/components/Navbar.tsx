@@ -7,11 +7,11 @@ const navLinks = [
   { label: "Aerospace", to: "/aerospace" },
   { label: "AI Impact", to: "/ai-impact" },
   { label: "The Project", to: "/project" },
-  { label: "Quiz", to: "/quiz" },
-  { label: "Team", to: "/team" },
-  { label: "Tech Stack", to: "/tech-stack" },
-  { label: "Contact", to: "/contact" },
   { label: "Demo", to: "/demo" },
+  { label: "Quiz", to: "/quiz" },
+  { label: "Tech Stack", to: "/tech-stack" },
+  { label: "Team", to: "/team" },
+  { label: "Contact", to: "/contact" },
 ];
 
 const Navbar = () => {
