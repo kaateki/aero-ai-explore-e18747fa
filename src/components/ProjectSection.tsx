@@ -227,7 +227,7 @@ const ProjectSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           onViewportEnter={() => setCountersVisible(true)}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20 max-w-4xl mx-auto"
+          className="grid grid-cols-3 gap-4 mb-20 max-w-3xl mx-auto"
         >
           {[
             { value: engines, label: "Engines Analyzed", suffix: "", icon: Zap },
