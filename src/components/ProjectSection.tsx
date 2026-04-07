@@ -227,13 +227,12 @@ const ProjectSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           onViewportEnter={() => setCountersVisible(true)}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20 max-w-4xl mx-auto"
+          className="grid grid-cols-3 gap-4 mb-20 max-w-3xl mx-auto"
         >
           {[
             { value: engines, label: "Engines Analyzed", suffix: "", icon: Zap },
             { value: sensors, label: "Sensor Channels", suffix: "", icon: Activity },
             { value: cycles, label: "Flight Cycles", suffix: "+", icon: TrendingDown },
-            { value: accuracy, label: "Best Accuracy", suffix: "%", icon: Gauge },
           ].map((stat) => (
             <Card key={stat.label} className="bg-gradient-card border-border text-center hover:border-primary/50 transition-colors">
               <CardContent className="pt-6">
@@ -289,7 +288,7 @@ const ProjectSection = () => {
         {/* Live Engine Simulator */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-20">
           <h3 className="font-display text-2xl font-semibold text-center mb-8">
-            🔴 Live Engine Health Simulator
+            Engine Health Simulator
           </h3>
           <div className="max-w-5xl mx-auto">
             <Card className="bg-gradient-card border-border overflow-hidden">

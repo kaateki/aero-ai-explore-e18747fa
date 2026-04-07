@@ -4,7 +4,7 @@ import { Code, BrainCircuit } from "lucide-react";
 
 const team = [
   {
-    name: "Aditya",
+    name: "Divyanshu",
     role: "ML Engineer & Backend Developer",
     contributions: [
       "Designed and trained ML models (RF, XGBoost, Neural Network)",
@@ -16,7 +16,7 @@ const team = [
     gradient: "from-primary/30 to-aero-purple/30",
   },
   {
-    name: "Divyanshu",
+    name: "Aditya",
     role: "Frontend Developer & Data Analyst",
     contributions: [
       "Built the interactive frontend dashboard",
