@@ -288,7 +288,7 @@ const ProjectSection = () => {
         {/* Live Engine Simulator */}
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-20">
           <h3 className="font-display text-2xl font-semibold text-center mb-8">
-            🔴 Live Engine Health Simulator
+            Engine Health Simulator
           </h3>
           <div className="max-w-5xl mx-auto">
             <Card className="bg-gradient-card border-border overflow-hidden">
