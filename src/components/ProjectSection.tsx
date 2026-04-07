@@ -233,7 +233,6 @@ const ProjectSection = () => {
             { value: engines, label: "Engines Analyzed", suffix: "", icon: Zap },
             { value: sensors, label: "Sensor Channels", suffix: "", icon: Activity },
             { value: cycles, label: "Flight Cycles", suffix: "+", icon: TrendingDown },
-            { value: accuracy, label: "Best Accuracy", suffix: "%", icon: Gauge },
           ].map((stat) => (
             <Card key={stat.label} className="bg-gradient-card border-border text-center hover:border-primary/50 transition-colors">
               <CardContent className="pt-6">
