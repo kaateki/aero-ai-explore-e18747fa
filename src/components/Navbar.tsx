@@ -8,7 +8,7 @@ const navLinks = [
   { label: "AI Impact", to: "/ai-impact" },
   { label: "The Project", to: "/project" },
   { label: "Demo", to: "/demo" },
-  { label: "Quiz", to: "/quiz" },
+  { label: "Survey", to: "/quiz" },
   { label: "Tech Stack", to: "/tech-stack" },
   { label: "Team", to: "/team" },
   { label: "Contact", to: "/contact" },
